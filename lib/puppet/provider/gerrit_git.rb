@@ -154,6 +154,13 @@ class Puppet::Provider::Git < Puppet::Provider::Rest
       end
     end
     
+    # Sort rules Array inside
+    result.each do |k1, v1|
+      v1.each do |k2, v2|
+        result[k1][k2] = v2.sort
+      end
+    end
+    
     result
   end
   
