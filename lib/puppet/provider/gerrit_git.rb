@@ -107,22 +107,35 @@ class Puppet::Provider::Git < Puppet::Provider::Rest
       key_parsed = key.split(".")
       
       if key_parsed[0] == 'access' and key_parsed.count == 3
+        reference = key_parsed[1]
+        level = key_parsed[2]
+        
         value = k_v[1]
         value_parsed = value.split(" ")
-        if (value_parsed[0] == 'group')
-          value_parsed.delete_at(0)
+        
+        group_index = value_parsed.index('group')        
+        if (group_index != nil) 
+          if (group_index == 0)
+            value_parsed.delete_at(0)            
+          elsif (group_index == 1)
+            extra_value = value_parsed[0]
+            level += "="+extra_value
+            
+            value_parsed.delete_at(0)
+            value_parsed.delete_at(1)
+          else
+            Puppet.debug "Found access rule where 'group' identifier is not in normal location: "+line
+            next
+          end
           
-          group = ""
+          group = ""         
           value_parsed.each do |group_word|
             group += " " unless group == ""
             group += group_word
           end
           
-          reference = key_parsed[1]
-          level = key_parsed[2]
-          
           #Puppet.debug "PARSED: ["+reference+'] '+level +" = "+group
-          
+
           if !result.has_key?(group)
             result[group] = Hash.new
           end
@@ -134,7 +147,9 @@ class Puppet::Provider::Git < Puppet::Provider::Rest
           referenceConfig = result[group][reference]
                  
           result[group][reference].push level unless result[group][reference].include?(level)
-        end        
+        else
+          Puppet.debug "Found access rule without 'group' identifier in the value: "+line
+        end      
       end
     end
     

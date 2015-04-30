@@ -82,8 +82,14 @@ Puppet::Type.type(:gerrit_access_role).provide :git, :parent => Puppet::Provider
     end  
     
     resource[:rules].each do |reference, levels|       
-      levels.each do |level| 
-        git_add(resource[:project], "access.#{reference}.#{level}", "group #{resource[:group]}")      
+      levels.each do |level|
+        extra_info = ""         
+        if level.include?("=")
+          parts = level.split("=")
+          level = parts[0]
+          extra_info = parts[1]+" "          
+        end
+        git_add(resource[:project], "access.#{reference}.#{level}", "#{extra_info}group #{resource[:group]}")
       end
     end
       
@@ -103,18 +109,36 @@ Puppet::Type.type(:gerrit_access_role).provide :git, :parent => Puppet::Provider
             
           levels.each do |addLevel|
             if !oldLevels.include?(addLevel)
-              git_add(resource[:project], "access.#{reference}.#{addLevel}", "group #{resource[:group]}") 
+              extra_info = ""         
+              if level.include?("=")
+                parts = level.split("=")
+                level = parts[0]
+                extra_info = parts[1]+" "          
+              end
+              git_add(resource[:project], "access.#{reference}.#{addLevel}", "#{extra_info}group #{resource[:group]}")
             end
           end
           
           oldLevels.each do |removeLevel|
             if !levels.include?(removeLevel)              
-              git_unset(resource[:project], "access.#{reference}.#{removeLevel}", "group #{resource[:group]}")      
+              extra_info = ""         
+              if level.include?("=")
+                parts = level.split("=")
+                level = parts[0]
+                extra_info = parts[1]+" "          
+              end
+              git_unset(resource[:project], "access.#{reference}.#{removeLevel}", "#{extra_info}group #{resource[:group]}")
             end
           end
         else
           levels.each do |level|
-            git_add(resource[:project], "access.#{reference}.#{level}", "group #{resource[:group]}")
+            extra_info = ""         
+            if level.include?("=")
+              parts = level.split("=")
+              level = parts[0]
+              extra_info = parts[1]+" "          
+            end
+            git_add(resource[:project], "access.#{reference}.#{level}", "#{extra_info}group #{resource[:group]}")
           end
         end 
       end
@@ -122,7 +146,13 @@ Puppet::Type.type(:gerrit_access_role).provide :git, :parent => Puppet::Provider
       currentObject[:rules].each do |reference, levels|
         if ! resource[:rules].has_key?(reference)
           levels.each do |level|
-            git_unset(resource[:project], "access.#{reference}.#{level}", "group #{resource[:group]}")
+            extra_info = ""         
+            if level.include?("=")
+              parts = level.split("=")
+              level = parts[0]
+              extra_info = parts[1]+" "          
+            end
+            git_unset(resource[:project], "access.#{reference}.#{level}", "#{extra_info}group #{resource[:group]}")
           end
         end
       end
@@ -147,7 +177,13 @@ Puppet::Type.type(:gerrit_access_role).provide :git, :parent => Puppet::Provider
     if config != nil
       config[:rules].each do |reference, levels|       
         levels.each do |level| 
-          git_unset(resource[:project], "access.#{reference}.#{level}", "group #{resource[:group]}")      
+          extra_info = ""         
+          if level.include?("=")
+            parts = level.split("=")
+            level = parts[0]
+            extra_info = parts[1]+" "          
+          end
+          git_unset(resource[:project], "access.#{reference}.#{level}", "#{extra_info}group #{resource[:group]}")
         end
       end
     end
