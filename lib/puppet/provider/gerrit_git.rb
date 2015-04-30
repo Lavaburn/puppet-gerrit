@@ -106,7 +106,7 @@ class Puppet::Provider::Git < Puppet::Provider::Rest
       key = k_v[0]      
       key_parsed = key.split(".")
       
-    Puppet.debug "RAW LINE: "+line
+      #Puppet.debug "RAW LINE: "+line
       if key_parsed[0] == 'access' and key_parsed.count == 3
         reference = key_parsed[1]
         level = key_parsed[2]
@@ -123,7 +123,7 @@ class Puppet::Provider::Git < Puppet::Provider::Rest
             level += "="+extra_value
             
             value_parsed.delete_at(0)
-            value_parsed.delete_at(1)
+            value_parsed.delete_at(0) # Second entry becomes first entry after deleting first entry
           else
             Puppet.debug "Found access rule where 'group' identifier is not in normal location: "+line
             next

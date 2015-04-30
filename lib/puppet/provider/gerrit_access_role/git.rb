@@ -26,7 +26,7 @@ Puppet::Type.type(:gerrit_access_role).provide :git, :parent => Puppet::Provider
     get_configs().each do |project, config|
       config.each do |group, rules|
   
-        #Puppet.debug "Config loaded: -#{group} in #{project}-"
+        #Puppet.debug "Config loaded: -#{group} in #{project}-: "+rules.inspect
         
         role = {
           :name     => "#{group} in #{project}",
