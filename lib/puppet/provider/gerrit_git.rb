@@ -135,7 +135,7 @@ class Puppet::Provider::Git < Puppet::Provider::Rest
             group += group_word
           end
           
-          Puppet.debug "PARSED: ["+reference+'] '+level +" = "+group
+          #Puppet.debug "PARSED: ["+reference+'] '+level +" = "+group
 
           if !result.has_key?(group)
             result[group] = Hash.new
@@ -184,9 +184,8 @@ class Puppet::Provider::Git < Puppet::Provider::Rest
     project_path = path+'/'+project
     
     Dir.chdir(project_path) do
-# TODO ENABLE AFTER DEBUG !!!
-#      self.class.gitcmd('commit', '-a', '-m', "\"#{commitMsg}\"")
-#      self.class.gitcmd('push', 'origin', 'HEAD:refs/meta/config')        
+      self.class.gitcmd('commit', '-a', '-m', "\"#{commitMsg}\"")
+      self.class.gitcmd('push', 'origin', 'HEAD:refs/meta/config')        
     end    
   end
       
