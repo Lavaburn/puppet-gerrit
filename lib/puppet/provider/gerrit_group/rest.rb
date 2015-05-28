@@ -21,10 +21,17 @@ Puppet::Type.type(:gerrit_group).provide :rest, :parent => Puppet::Provider::Res
   end  
 
   def self.instances
-    get_objects(:groups).collect do |name, object|
-#      Puppet.debug "GROUP FOUND: "+getGroup(name).inspect      
-      new(getGroup(name))
+    result = Array.new
+    
+    list = get_objects(:groups)    
+    if list != nil
+      list.each do |name, object|
+        #Puppet.debug "GROUP FOUND: "+object.inspect      
+        list.push new(getGroup(name))
+      end
     end
+    
+    result
   end
   
   # TYPE SPECIFIC  

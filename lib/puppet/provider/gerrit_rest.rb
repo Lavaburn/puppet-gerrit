@@ -18,19 +18,48 @@ class Puppet::Provider::Rest < Puppet::Provider
   end
     
   def self.get_rest_info
-    # TODO - read the below variables from a config file
+    config_file = "/etc/puppet/gerrit_api.yaml"
     
-    ip = '105.235.209.24'
-    port = '8082'
-    ssh_port = '29418'
-    username = 'nicolas'
-    password = 'password'
+    data = File.read(config_file) or raise "Could not read setting file #{config_file}"    
+    yamldata = YAML.load(data)
+        
+    if yamldata.include?('ip')
+      ip = yamldata['ip']
+    else
+      ip = '127.0.0.1'
+    end
 
-    { :ip       => ip,
-      :port     => port,
-      :ssh_port => ssh_port,
-      :username => username,
-      :password => password
+    if yamldata.include?('port')
+      port = yamldata['port']
+    else
+      port = '80'
+    end
+
+    if yamldata.include?('ssh_port')
+      ssh_port = yamldata['ssh_port']
+    else
+      ssh_port = '29418'
+    end
+    
+    if yamldata.include?('install_dir')
+      install_dir = yamldata['install_dir']
+    else
+      install_dir = '/opt/gerrit'
+    end
+    
+    if yamldata.include?('admin_user') and yamldata.include?('admin_password')
+      username = yamldata['admin_user']
+      password = yamldata['admin_password']
+    else      
+      raise "The configuration file #{config_file} should include admin_user and admin_password!"
+    end
+
+    { :ip          => ip,
+      :port        => port,
+      :ssh_port    => ssh_port,
+      :install_dir => install_dir,
+      :username    => username,
+      :password    => password,
     }
   end
 

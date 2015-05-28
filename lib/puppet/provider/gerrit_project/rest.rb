@@ -20,9 +20,17 @@ Puppet::Type.type(:gerrit_project).provide :rest, :parent => Puppet::Provider::R
   end  
 
   def self.instances
-    get_objects(:projects).collect do |name, object|
-      new(getProject(object["id"]))
-    end      
+    result = Array.new
+    
+    list = get_objects(:projects)    
+    if list != nil
+      list.each do |name, object|
+        #Puppet.debug "PROJECT FOUND: "+object.inspect      
+        list.push new(getProject(object["id"]))
+      end
+    end
+    
+    result
   end
   
   def self.getProject(id) 

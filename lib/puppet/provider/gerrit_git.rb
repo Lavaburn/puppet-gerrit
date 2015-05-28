@@ -22,12 +22,19 @@ class Puppet::Provider::Git < Puppet::Provider::Rest
     end
         
     %x{git #{argList}}
+    
+    if $?.success?
+      true
+    else
+      false
+    end
   end
   
   def self.get_path(warn = false)
-    parent = '/opt/gerrit'        # TODO PARAM rest_info ?
-    if (! File.directory?(parent))             
-      # TODO ENABLE !! Puppet.warning "Gerrit was not installed in the default path (/opt/gerrit) on localhost. Will use /tmp (less optimal)" unless !warn      
+    rest_info = get_rest_info
+    
+    parent = rest_info[:install_dir]
+    if (! File.directory?(parent))
       parent = '/tmp'
     end        
     
@@ -53,7 +60,7 @@ class Puppet::Provider::Git < Puppet::Provider::Rest
       if (! File.directory?(project_path))      
         Dir.chdir(path) do        
           self.class.gitcmd('clone', 'ssh://'+rest_info[:username]+'@'+rest_info[:ip]+':'+rest_info[:ssh_port]+'/'+project)      # TODO SETUP SSH KEY !!
-        end
+        end# ROOT .ssh/id_rsa.pub => Import on Gerrit webif (first user => nicolas => SEE REST)
             
         Dir.chdir(project_path) do
           self.class.gitcmd('pull', 'origin', 'refs/meta/config:refs/remotes/origin/meta/config')
@@ -61,7 +68,13 @@ class Puppet::Provider::Git < Puppet::Provider::Rest
         end      
       else
         Dir.chdir(project_path) do
-          self.class.gitcmd('pull', 'origin', 'refs/meta/config:refs/remotes/origin/meta/config')  
+          cmd_result = self.class.gitcmd('pull', 'origin', 'refs/meta/config:refs/remotes/origin/meta/config')
+          if !cmd_result
+            raise "Could not pull git config ! Unable to change settings."            
+#            git reset --hard HEAD
+#            git clean -f -d
+#            git pull
+          end
         end   
       end
     end
@@ -199,11 +212,14 @@ class Puppet::Provider::Git < Puppet::Provider::Rest
   # REST INTERFACE !
   def self.get_projects
     result = Array.new
-    
-    get_objects(:projects).each do |name, object|
-      result.push name
-    end      
     result.push "All-Projects"
+    
+    projects = get_objects(:projects)
+    if projects != nil      
+      projects.each do |name, object|
+        result.push name
+      end     
+    end     
     
     result
   end

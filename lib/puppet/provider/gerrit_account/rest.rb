@@ -22,14 +22,16 @@ Puppet::Type.type(:gerrit_account).provide :rest, :parent => Puppet::Provider::R
 
   def self.instances
     result = Array.new
-    
-    get_objects(:groups).each do |name, object|
-      get_objects("groups/#{object['id']}/members").each do |aobject|
-#        Puppet.debug "ACCOUNT FOUND: "+getAccount(aobject["_account_id"]).inspect
         
-        # TODO MAKE SURE IT'S UNIQUE ??
-        result.push new(getAccount(aobject["_account_id"]))
-      end  
+    list = get_objects(:groups)    
+    if list != nil
+      list.each do |name, object|  
+        get_objects("groups/#{object['id']}/members").each do |aobject|
+          #Puppet.debug "ACCOUNT FOUND: "+aobject["_account_id"].inspect          
+          # TODO MAKE SURE IT'S UNIQUE ??
+          result.push new(getAccount(aobject["_account_id"]))
+        end
+      end
     end
     
     result
@@ -71,7 +73,9 @@ Puppet::Type.type(:gerrit_account).provide :rest, :parent => Puppet::Provider::R
     end
     groups.delete "All Users"
     groups.delete "Anonymous Users"
-    groups.delete "Registered Users"    
+    groups.delete "Registered Users"  
+    
+    groups.sort!    # .sort returns new array, .sort! performs it on the object itself
         
     if (active == "ok")
       state = :present
