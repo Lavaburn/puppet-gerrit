@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', 'gerrit_rest')
 
-Puppet::Type.type(:gerrit_account).provide :rest, :parent => Puppet::Provider::Rest do
+Puppet::Type.type(:gerrit_account).provide :rest, :parent => Puppet::Provider::GerritRest do
   desc "REST provider for Gerrit Account"
   
   mk_resource_methods

@@ -7,7 +7,7 @@ rescue LoadError => e
   Puppet.info "Gerrit Puppet module requires 'rest-client' and 'json' ruby gems."
 end
 
-class Puppet::Provider::Git < Puppet::Provider::Rest
+class Puppet::Provider::Git < Puppet::Provider::GerritRest
   desc "Gerrit Projects Git Config"
 
   confine :feature => :json
