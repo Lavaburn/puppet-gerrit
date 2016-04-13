@@ -18,7 +18,7 @@ class Puppet::Provider::GerritRest < Puppet::Provider
   end
     
   def self.get_rest_info
-    config_file = "/etc/puppet/gerrit_api.yaml"
+    config_file = "/opt/gerrit/api.yaml"
     
     data = File.read(config_file) or raise "Could not read setting file #{config_file}"    
     yamldata = YAML.load(data)

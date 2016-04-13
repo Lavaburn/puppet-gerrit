@@ -7,5 +7,8 @@ fixtures:
     mysql: "puppetlabs/mysql"
     stdlib: "puppetlabs/stdlib"
     wget: "maestrodev/wget"
+    httpauth:
+      repo: "jamtur01/httpauth"
+      ref: "0.0.3"
   symlinks:
     gerrit: "#{source_dir}"
