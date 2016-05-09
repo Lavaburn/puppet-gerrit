@@ -6,6 +6,7 @@
 # * username (string): The username to authenticate on the API. [REQUIRED]
 # * password (string): The password to authenticate on the API. [REQUIRED]
 # * root_ssh_key (string): The (public) SSH key for the local root user. [REQUIRED]
+# * root_ssh_key (string): The SSH key type.
 # * host (string): The host to call the API on. Default: 127.0.0.1
 # * port (integer): The HTTP port to call the API on. Default: 8080
 # * ssh_port (integer): The SSH port. Default: 29418
@@ -22,6 +23,7 @@ class gerrit::api (
   $username        = undef,
   $password        = undef,
   $root_ssh_key    = undef,
+  $root_ssh_type   = 'ssh-rsa',
   $host            = '127.0.0.1',
   $port            = 8080,
   $ssh_port        = 29418,
@@ -32,7 +34,7 @@ class gerrit::api (
 ) {
   # Validation
   validate_bool($setup_config, $setup_rest_auth, $setup_ssh_keys)
-  validate_string($host, $username, $password, $root_ssh_key)
+  validate_string($host, $username, $password, $root_ssh_key, $root_ssh_type)
   validate_absolute_path($install_dir)
 
   # Config file location is currently statically configured (gerrit_rest.rb)
@@ -60,7 +62,7 @@ class gerrit::api (
     ->
     httpauth { "gerrit_auth_${username}":
 	   file     => "${install_dir}/etc/.htpasswd",
-      name     => $username,
+     name     => $username,
 	   password => $password,
 	 }
   }
@@ -69,6 +71,7 @@ class gerrit::api (
   if ($setup_ssh_keys) {
     ssh_authorized_key { 'root@localhost':
 		  user => $username,
+		  type => $root_ssh_type,
 		  key  => $root_ssh_key,
 		}
   }
