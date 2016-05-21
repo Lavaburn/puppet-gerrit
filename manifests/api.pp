@@ -69,8 +69,8 @@ class gerrit::api (
 	# SSH Keys
   if ($setup_ssh_keys) {
     $ssh_key = {
-      user => $username,
-      type => 'ssh-rsa',
+      user   => $username,
+      'type' => 'ssh-rsa',# Puppet 4 - type is reserved word...
     }
     create_resources('ssh_authorized_key', $root_ssh_key, $ssh_key)
   }
