@@ -1,3 +1,5 @@
+require File.join(File.dirname(__FILE__), 'gerrit_rest')
+
 begin
   require 'rest-client' if Puppet.features.rest_client?
   require 'json' if Puppet.features.json?   
@@ -7,7 +9,7 @@ rescue LoadError => e
   Puppet.info "Gerrit Puppet module requires 'rest-client' and 'json' ruby gems."
 end
 
-class Puppet::Provider::Git < Puppet::Provider::GerritRest
+class Puppet::Provider::GerritGit < Puppet::Provider::GerritRest
   desc "Gerrit Projects Git Config"
 
   confine :feature => :json

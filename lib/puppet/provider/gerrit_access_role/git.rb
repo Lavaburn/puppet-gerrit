@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '..', 'gerrit_git')
 
-Puppet::Type.type(:gerrit_access_role).provide :git, :parent => Puppet::Provider::Git do
+Puppet::Type.type(:gerrit_access_role).provide :git, :parent => Puppet::Provider::GerritGit do
   desc "Git provider for Gerrit Access Role"
   
   mk_resource_methods

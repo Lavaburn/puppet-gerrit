@@ -27,7 +27,7 @@ Puppet::Type.type(:gerrit_group).provide :rest, :parent => Puppet::Provider::Ger
     if list != nil
       list.each do |name, object|
         #Puppet.debug "GROUP FOUND: "+object.inspect      
-        list.push new(getGroup(name))
+        result.push new(getGroup(name))
       end
     end
     

@@ -26,7 +26,7 @@ Puppet::Type.type(:gerrit_project).provide :rest, :parent => Puppet::Provider::G
     if list != nil
       list.each do |name, object|
         #Puppet.debug "PROJECT FOUND: "+object.inspect      
-        list.push new(getProject(object["id"]))
+        result.push new(getProject(object["id"]))
       end
     end
     
