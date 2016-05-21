@@ -6,7 +6,6 @@
 # * username (string): The username to authenticate on the API. [REQUIRED]
 # * password (string): The password to authenticate on the API. [REQUIRED]
 # * root_ssh_key (string): The (public) SSH key for the local root user. [REQUIRED]
-# * root_ssh_key (string): The SSH key type.
 # * host (string): The host to call the API on. Default: 127.0.0.1
 # * port (integer): The HTTP port to call the API on. Default: 8080
 # * ssh_port (integer): The SSH port. Default: 29418
@@ -22,8 +21,7 @@
 class gerrit::api (
   $username        = undef,
   $password        = undef,
-  $root_ssh_key    = undef,
-  $root_ssh_type   = 'ssh-rsa',
+  $root_ssh_key    = {},
   $host            = '127.0.0.1',
   $port            = 8080,
   $ssh_port        = 29418,
@@ -34,8 +32,9 @@ class gerrit::api (
 ) {
   # Validation
   validate_bool($setup_config, $setup_rest_auth, $setup_ssh_keys)
-  validate_string($host, $username, $password, $root_ssh_key, $root_ssh_type)
+  validate_string($host, $username, $password, $root_ssh_key)
   validate_absolute_path($install_dir)
+  validate_hash($root_ssh_key)
 
   # Config file location is currently statically configured (gerrit_rest.rb)
   $api_auth_file = '/opt/gerrit/api.yaml'
@@ -69,11 +68,11 @@ class gerrit::api (
 
 	# SSH Keys
   if ($setup_ssh_keys) {
-    ssh_authorized_key { 'root@localhost':
-		  user => $username,
-		  type => $root_ssh_type,
-		  key  => $root_ssh_key,
-		}
+    $ssh_key = {
+      user => $username,
+      type => 'ssh-rsa',
+    }
+    create_resources('ssh_authorized_key', $root_ssh_key, $ssh_key)
   }
 
   # Dependency Gems Installation
