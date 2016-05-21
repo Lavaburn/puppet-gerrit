@@ -170,7 +170,7 @@ class Puppet::Provider::GerritRest < Puppet::Provider
       }        
     rescue => e
       Puppet.debug "Gerrit API response: "+e.inspect
-      raise "Unable to contact Gerrit API on #{resource.inspect}"
+      raise "Unable to contact Gerrit API on #{resource.inspect}: "+e.inspect
     end
     
     if response != nil
@@ -195,7 +195,7 @@ class Puppet::Provider::GerritRest < Puppet::Provider
       response = resource.put paramJSON.to_json, :content_type => :json, :accept => :json
     rescue => e
       Puppet.debug "Gerrit API response: "+e.inspect
-      raise "Unable to contact Gerrit API on #{resource.inspect}"
+      raise "Unable to contact Gerrit API on #{resource.inspect}: "+e.inspect
     end
 
     response = response.sub(")]}'", '')  
@@ -217,7 +217,7 @@ class Puppet::Provider::GerritRest < Puppet::Provider
      response = resource.put Hash.new.to_json, :content_type => :json, :accept => :json
     rescue => e
       Puppet.debug "Gerrit API response: "+e.inspect
-      raise "Unable to contact Gerrit API on #{resource.inspect}"
+      raise "Unable to contact Gerrit API on #{resource.inspect}: "+e.inspect
     end
 
     response = response.sub(")]}'", '')  
@@ -239,7 +239,7 @@ class Puppet::Provider::GerritRest < Puppet::Provider
       response = resource.post paramRaw, :content_type => :text, :accept => :json
     rescue => e
       Puppet.debug "Gerrit API response: "+e.inspect
-      raise "Unable to contact Gerrit API on #{resource.inspect}"
+      raise "Unable to contact Gerrit API on #{resource.inspect}: "+e.inspect
     end
   
     response = response.sub(")]}'", '')  
@@ -261,7 +261,7 @@ class Puppet::Provider::GerritRest < Puppet::Provider
       response = resource.delete
     rescue => e
       Puppet.debug "Gerrit API response: "+e.inspect
-      raise "Unable to contact Gerrit API on #{resource.inspect}"
+      raise "Unable to contact Gerrit API on #{resource.inspect}: "+e.inspect
     end
     
     response 
