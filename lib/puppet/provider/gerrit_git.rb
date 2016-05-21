@@ -102,7 +102,8 @@ class Puppet::Provider::GerritGit < Puppet::Provider::GerritRest
     #Puppet.debug "Reading config from "+project_path
     Dir.chdir(project_path) do
       if (File.file?('project.config'))
-        config = gitcmd('config', '-f', 'project.config', '--list')  
+        # DO NOT use gitcmd (returns boolean)
+        config = %x{git config -f project.config --list}
         parsed = parse_config(config)
       
         parsed
