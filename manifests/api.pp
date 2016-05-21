@@ -32,7 +32,7 @@ class gerrit::api (
 ) {
   # Validation
   validate_bool($setup_config, $setup_rest_auth, $setup_ssh_keys)
-  validate_string($host, $username, $password, $root_ssh_key)
+  validate_string($host, $username, $password)
   validate_absolute_path($install_dir)
   validate_hash($root_ssh_key)
 
