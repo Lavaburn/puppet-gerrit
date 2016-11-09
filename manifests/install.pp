@@ -216,12 +216,25 @@ class gerrit::install (
       }
     }
     'Debian': {
-      if versioncmp($::operatingsystemrelease, '8') >= 0 {
-        $use_systemd = true
-        $systemd_path = '/lib/systemd/system'
-      }
-      else {
-        fail("${::osfamily} is supported for versions >= 8 (>= jessie)")
+      case $::operatingsystem {
+        'Ubuntu': {
+          if versioncmp($::operatingsystemrelease, '15.10') >= 0 {
+            $use_systemd = true
+            $systemd_path = '/usr/lib/systemd/system'
+          } else {
+            $use_systemd = false
+          }
+        }
+        # Real Debian (?)
+        default: {
+          if versioncmp($::operatingsystemrelease, '8') >= 0 {
+            $use_systemd = true
+            $systemd_path = '/lib/systemd/system'
+          }
+          else {
+            fail("${::osfamily} is supported for versions >= 8 (>= jessie)")
+          }
+        }
       }
     }
     # We don't currently support not RH/Debian based systems
