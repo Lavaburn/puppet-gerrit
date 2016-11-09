@@ -65,12 +65,12 @@ class Puppet::Provider::GerritGit < Puppet::Provider::GerritRest
         end# ROOT .ssh/id_rsa.pub => Import on Gerrit webif (first user => nicolas => SEE REST)
             
         Dir.chdir(project_path) do
-          self.class.gitcmd('pull', 'origin', 'refs/meta/config:refs/remotes/origin/meta/config')
+          self.class.gitcmd('pull', 'origin', 'refs/meta/config:refs/remotes/origin/meta/config', '-f')
           self.class.gitcmd('checkout', 'meta/config')        
         end      
       else
         Dir.chdir(project_path) do
-          cmd_result = self.class.gitcmd('pull', 'origin', 'refs/meta/config:refs/remotes/origin/meta/config')
+          cmd_result = self.class.gitcmd('pull', 'origin', 'refs/meta/config:refs/remotes/origin/meta/config', '-f')
           if !cmd_result
             raise "Could not pull git config ! Unable to change settings."            
 #            git reset --hard HEAD
