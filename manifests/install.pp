@@ -367,9 +367,17 @@ class gerrit::install (
   $gitpath = $options['gerrit']['basePath']
   validate_absolute_path($gitpath)
 
+  file { $gerrit_home:
+    ensure  => directory,
+    owner   => $gerrit_user,
+    group   => $gerrit_group,
+    require => User[$gerrit_user],
+  }
+  ->
   file { [
       "${gerrit_home}/bin",
       "${gerrit_home}/etc",
+      "${gerrit_home}/hooks",
       "${gerrit_home}/lib",
       "${gerrit_home}/logs",
       "${gerrit_home}/plugins",

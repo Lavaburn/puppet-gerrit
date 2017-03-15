@@ -158,14 +158,14 @@ class Puppet::Provider::GerritRest < Puppet::Provider
     begin      
       response = resource.get(:accept => :json) { |response, request, result, block|
         case response.code
-          when 404
-            if (!json_output)
-              return ""
-            else
-              raise "404 - NotFound for Gerrit API on #{resource.inspect} and expected JSON formatting."
-            end
+        when 404
+          if (!json_output)
+            return ""
           else
-            response.return!(request, result, &block)
+            raise "404 - NotFound for Gerrit API on #{resource.inspect} and expected JSON formatting."
+          end
+        else
+          response.return!(&block)
         end          
       }        
     rescue => e
